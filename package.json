@@ -23,7 +23,18 @@
         "output": "dist"
     },
     "files": [
-        "**/*"
+        "**/*",
+        "!.gitignore",
+        "!docs/**",
+        "!dist/**",
+        "!package.json",
+        "!package-lock.json",
+        "!**/*.sh",
+        "!**/*.map",
+        "!**/*.md",
+        "!**/test{,s}/**",
+        "!**/node_modules/*/{test,__tests__}/**",
+        "!**/node_modules/*/*.map"
     ],
     "win": {
         "target": "nsis",

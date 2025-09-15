@@ -8,10 +8,10 @@ echo "  Electron Builder 시작..."
 echo "=============================="
 
 # dist 폴더 삭제 (이전 빌드 정리)
-# if [ -d "dist" ]; then
-#     echo "이전 dist 폴더 삭제 중..."
-#     rm -rf dist
-# fi
+if [ -d "dist" ]; then
+    echo "이전 dist 폴더 삭제 중..."
+    rm -rf dist
+fi
 
 # 빌드 실행
 echo "배포용 빌드 실행 중..."
