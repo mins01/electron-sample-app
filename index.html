@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello Electron</title>
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data:;
+    ">
+    <script>
+      async function ipcTimeNow(params) {
+        const r = await window.electronAPI.timeNow();
+        console.log(r); // { name: "Electron", version: "1.0" }
+        alert(r);
+      } 
+      async function ipcQuit(params) {
+        alert('종료합니다.')
+        const r = await window.electronAPI.quit();
+      } 
+    </script>
+  </head>
+  <body>
+    <h1>Hello, Electron!</h1>
+    <p>첫 번째 Electron 앱입니다 🚀</p>
+    <div>
+      <button type="button" onclick="ipcTimeNow()">ipcTimeNow</button>
+      <button type="button" onclick="ipcQuit()">ipcQuit</button>
+      <button type="button" onclick="self.close()">self.close()</button>
+    </div>
+  </body>
+</html>

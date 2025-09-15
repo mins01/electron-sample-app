@@ -1,0 +1,121 @@
+
+# 정보 확인
+node -v
+=> v20.12.1
+
+npm -v
+=> 10.5.0
+
+# npm 초기화 : 기본 package.json 생성
+npm init -y
+
+# Electron 설치
+npm install --save-dev electron     # 기본 버전
+npm install electron@latest --save-dev # 최신버전
+!. --save-dev :devDependencies 에 기록. 개발 중에만 필요한 라이브러리.
+
+$ npm install --save-dev electron
+npm WARN deprecated boolean@3.2.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+
+added 70 packages, and audited 71 packages in 12s
+
+17 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+
+# package.json 에 실행 부분 추가/수정
+"scripts": {
+  "start": "electron ."
+}
+
+# 실행 js 과 html
+index.js
+index.html
+
+#실행
+npm start
+
+
+
+
+# 빌드용 라이브러리
+npm install --save-dev electron-builder
+
+# 빌드용 package.json 추가/수정
+"scripts": {
+  "start": "electron .",
+  "dist": "electron-builder"
+}
+
+"build": {
+    "appId": "com.example.sampleapp",
+    "productName": "SampleApp", // 앱 이름
+    "directories": {
+        "output": "dist"
+    },
+    "files": [
+        "**/*"
+    ],
+    "win": {
+        "target": "nsis",
+        "icon": "build/icon.ico"
+    },
+    "nsis": {
+        "oneClick": false, // 한번에 자동설치 끄기 -> 설치 경로 물어봄
+        "allowToChangeInstallationDirectory": true, // 설치 경로 변경 가능
+        "perMachine": false // true → Program Files, false → AppData
+    }
+}
+
+# 아이콘
+build/icon.ico : 256x256 크기가 되어야함
+관련 에러
+image ~~~\sample\build\icon.ico must be at least 256x256
+
+# 빌드하기
+npm run dist
+!. 최초 한번은 관리자 권한으로 실행하라. 
+관련 에러: errorOut=ERROR: Cannot create symbolic link : 클라이언트가 필요한 권한을 가지고 있지 않습니다. : ~~~\electron-builder\Cache\winCodeSign\083434387\darwin\10.12\lib\libcrypto.dylib
+
+# 빌드 메세지
+npm run dist
+
+> sample@1.0.0 dist
+> electron-builder
+
+  • electron-builder  version=26.0.12 os=10.0.19045
+  • loaded configuration  file=package.json ("build" field)
+  • writing effective config  file=dist\builder-effective-config.yaml
+  • executing @electron/rebuild  electronVersion=38.1.0 arch=x64 buildFromSource=false appDir=./
+  • installing native dependencies  arch=x64
+  • completed installing native dependencies
+  • packaging       platform=win32 arch=x64 electron=38.1.0 appOutDir=dist\win-unpacked
+  • updating asar integrity executable resource  executablePath=dist\win-unpacked\SampleApp.exe
+  • signing with signtool.exe  path=dist\win-unpacked\SampleApp.exe
+  • building        target=nsis file=dist\SampleApp Setup 1.0.0.exe archs=x64 oneClick=true perMachine=false
+  • signing with signtool.exe  path=dist\win-unpacked\resources\elevate.exe
+  • signing with signtool.exe  path=dist\__uninstaller-nsis-sample.exe
+  • signing with signtool.exe  path=dist\SampleApp Setup 1.0.0.exe
+  • building block map  blockMapFile=dist\SampleApp Setup 1.0.0.exe.blockmap
+
+
+# 빌드 후 폴더 구조
+- ./dist/win-unpacked : 설치용 소스 파일 들 
+  - 실재 배포엔 사용 안됨. 설치 후 이 폴더와 거의 같은 내용이 PC에 설치 됨
+- ./dist/SampleApp Setup 1.0.0.exe : 설치 파일
+  - 설치하면 C:\Users\{USERNAME}\AppData\Local\Programs\{package.json의 name}
+  - 설치앱 이름 : package.json 의 build.productName
+
+
+# 빌드 중 에러
+⨯ EBUSY: resource busy or locked, unlink '~~~~\electron\electron-sample-app\dist\sample-1.0.0-x64.nsis.7z'  failedTask=build stackTrace=Error: EBUSY: resource busy or locked, unlink '~~~~\electron\electron-sample-app\dist\sample-1.0.0-x64.nsis.7z'
+=> 무슨 이유(파일이 락 걸려서) 때만에 해당 파일 삭제를 못했다는 이야기 (백신이 검사 했나?)
+=> 수동으로 삭제해도 된다.
+
+
+
+
+# 기타 이슈
+preload.js 는 CommonJS 형식만 지원된다. ESM으로 하면 에러난다.
