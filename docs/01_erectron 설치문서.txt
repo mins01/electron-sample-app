@@ -31,7 +31,7 @@ found 0 vulnerabilities
 }
 
 # 실행 js 과 html
-index.js
+main.js
 index.html
 
 #실행
@@ -43,7 +43,11 @@ npm start
 # 빌드용 라이브러리
 npm install --save-dev electron-builder
 
-# 빌드용 package.json 추가/수정
+
+
+# 빌드용 package.json 추가/수정 (윈도우 빌드용)
+package.json 에서 directories 프로퍼티 삭제
+
 "scripts": {
   "start": "electron .",
   "dist": "electron-builder"
@@ -102,9 +106,9 @@ npm run dist
 
 
 # 빌드 후 폴더 구조
-- ./dist/win-unpacked : 설치용 소스 파일 들 
+- ./dist/win-unpacked : 설치용 소스 파일들 
   - 실재 배포엔 사용 안됨. 설치 후 이 폴더와 거의 같은 내용이 PC에 설치 됨
-- ./dist/SampleApp Setup 1.0.0.exe : 설치 파일
+- ./dist/SampleApp Setup 1.0.0.exe : 설치 파일. 배포용 파일
   - 설치하면 C:\Users\{USERNAME}\AppData\Local\Programs\{package.json의 name}
   - 설치앱 이름 : package.json 의 build.productName
 
