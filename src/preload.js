@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   hello: () => ipcRenderer.invoke('hello'),
   timeNow: () => ipcRenderer.invoke('timeNow'),
   quit: () => ipcRenderer.send('quit'),
+  toggleFullscreen: () => ipcRenderer.send('toggle-fullscreen'),  
 });

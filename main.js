@@ -4,13 +4,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+let mainWindow = null
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     kiosk: true,          // 키오스크 모드 활성화
-    frame: false,         // 상단 메뉴 바 제거
-    fullscreen: true,     // 전체 화면
+    frame: true,         // 상단 메뉴 바 제거
+    // fullscreen: true,     // 전체 화면
     webPreferences: {
       contextIsolation: true,    // 필수
       nodeIntegration: false,    // 필수
@@ -18,12 +19,12 @@ function createWindow() {
       preload: path.join(__dirname, 'src/preload.js'), // 필요시
     }
   });
-  console.log(path.join(__dirname, 'src/preload.js'));
+  // console.log(path.join(__dirname, 'src/preload.js'));
 
   mainWindow.loadFile('index.html');
   // mainWindow.loadURL('http://mins01.com');
 
-  // mainWindow.webContents.openDevTools({ mode: 'detach' }); 디버거
+  mainWindow.webContents.openDevTools({ mode: 'detach' }); // 디버거
 
 
 
@@ -53,4 +54,9 @@ ipcMain.handle('timeNow', () => {
 ipcMain.on('quit', (event) => {
   console.log('Renderer requested app quit');
   app.quit();  // 앱 종료
+});
+ipcMain.on('toggle-fullscreen', () => {
+  if (mainWindow) {
+    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+  }
 });

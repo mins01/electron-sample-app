@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <title>Hello Electron</title>
     <meta http-equiv="Content-Security-Policy" content="
-      default-src 'self';
-      script-src 'self' 'unsafe-inline';
-      style-src 'self' 'unsafe-inline';
+      default-src 'self' https://cdn.jsdelivr.net;
+      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
       img-src 'self' data:;
     ">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+
+
     <script>
       async function ipcTimeNow(params) {
         const r = await window.electronAPI.timeNow();
@@ -19,15 +25,31 @@
         alert('종료합니다.')
         const r = await window.electronAPI.quit();
       } 
+      async function ipcToggleFullscreen(params) {
+        const r = await window.electronAPI.toggleFullscreen();
+      } 
     </script>
   </head>
   <body>
-    <h1>Hello, Electron!</h1>
-    <p>첫 번째 Electron 앱입니다 🚀</p>
-    <div>
-      <button type="button" onclick="ipcTimeNow()">ipcTimeNow</button>
-      <button type="button" onclick="ipcQuit()">ipcQuit</button>
-      <button type="button" onclick="self.close()">self.close()</button>
+    <div class="fixed-top left-0 d-flex align-items-center justify-content-center" style="inset: 0;">
+      <div class="container">
+        <div class="h-100">
+          <div>
+            <h1>Hello Electron Sample App</h1>
+            <div class="card my-3">
+              <div class="card-header">Buttons</div>
+              <div class="card-body">
+                <div class="">
+                  <button type="button" class="btn btn-primary" onclick="ipcTimeNow()">ipcTimeNow</button>
+                  <button type="button" class="btn btn-primary" onclick="ipcToggleFullscreen()">ipcToggleFullscreen()</button>
+                  <button type="button" class="btn btn-danger" onclick="ipcQuit()">ipcQuit</button>
+                  <button type="button" class="btn btn-danger" onclick="self.close()">self.close()</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
