@@ -23,7 +23,7 @@
         "output": "dist"
     },
     "files": [
-        "main.js",
+        "index.js",
         "index.html",
         "package.json",
         "src/**",
