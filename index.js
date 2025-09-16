@@ -1,4 +1,4 @@
-import { app, BrowserWindow ,ipcMain} from 'electron';
+import { app, BrowserWindow ,ipcMain , session} from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +35,16 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // 권한 요청 핸들러
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') {
+      // media: video + audio
+      callback(true); // 허용
+    } else {
+      callback(false); // 그 외는 거부
+    }
+  });
+
   createWindow();
 
   app.on('activate', () => {
@@ -45,6 +55,9 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
+
+
+
 
 
 // IPC 핸들러

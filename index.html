@@ -29,10 +29,72 @@
         const r = await window.electronAPI.toggleFullscreen();
       } 
     </script>
+    <script>
+      let stream =null;
+      async function startWebcam(){
+        const video = document.querySelector('#webcam');
+        stream = await navigator.mediaDevices.getUserMedia({ video: {width: 1280, height: 720} , audio: true });
+        video.srcObject = stream;
+        await video.play();
+      }
+      async function stopWebcam(){
+        if(stream){
+          const video = document.querySelector('#webcam');
+          stream.getTracks().forEach(track => track.stop());
+          video.srcObject = null;
+        }
+      }
+      function captureWebcam(){
+        const snapshot = document.querySelector('#snapshot');
+        const video = document.querySelector('#webcam');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // 캡처 이미지를 <img>에 표시
+        snapshot.src = canvas.toDataURL('image/png');
+      }
+      const prevCanvas = document.createElement('canvas');
+      let requestAnimationFrameId = null;
+      function captureDiffWebcam(){
+        const diffshot = document.querySelector('#diffshot');
+        const video = document.querySelector('#webcam');
+        const currentCanvas = document.createElement('canvas');
+        currentCanvas.width = video.videoWidth;
+        currentCanvas.height = video.videoHeight;
+        const ctx = currentCanvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, currentCanvas.width, currentCanvas.height);
+
+
+        const diffCanvas = document.querySelector('#diffCanvas');
+        diffCanvas.width = video.videoWidth;
+        diffCanvas.height = video.videoHeight;
+        {
+          const ctx = diffCanvas.getContext('2d');
+          ctx.drawImage(currentCanvas, 0, 0, currentCanvas.width, currentCanvas.height);
+          ctx.globalCompositeOperation="difference";
+          ctx.drawImage(prevCanvas, 0, 0, prevCanvas.width, prevCanvas.height);
+        }
+        
+        
+        {
+          const ctx = prevCanvas.getContext('2d');
+          prevCanvas.width = currentCanvas.width;
+          prevCanvas.height = currentCanvas.height;
+          ctx.drawImage(currentCanvas, 0, 0, currentCanvas.width, currentCanvas.height);
+        }
+        
+        requestAnimationFrameId = requestAnimationFrame(captureDiffWebcam);
+      }
+      function stopCaptureDiffWebcam(){
+        cancelAnimationFrame(requestAnimationFrameId);
+      }
+    </script>
   </head>
   <body>
-    <div class="fixed-top left-0 d-flex align-items-center justify-content-center" style="inset: 0;">
-      <div class="container">
+    <div class="container">
         <div class="h-100">
           <div>
             <h1>Hello Electron Sample App</h1>
@@ -47,9 +109,44 @@
                 </div>
               </div>
             </div>
+            <div class="card my-3">
+              <div class="card-header">WEBCAM</div>
+              <div class="card-body">
+                <div class="mb-3 d-flex flex-wrap gap-3">
+                  <div>
+                    <div class="form-label">webcam</div>
+                    <div>
+                      <video id="webcam" autoplay playsinline muted style="display: block; aspect-ratio: 16/9; width: 300px;"></video>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="form-label">capture</div>
+                    <div>
+                      <img id="snapshot" src="" alt="" width="300">
+                    </div>
+                    <div>
+                      <a href="" download="download.png" onclick="this.href = document.querySelector('#snapshot').src">다운로드</a>
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <div class="form-label">diff(motion detect)</div>
+                      <canvas id="diffCanvas" style="width:300px;filter: invert(1) grayscale(1);"></canvas>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <button type="button" class="btn btn-primary" onclick="startWebcam()">startWebcam()</button>
+                  <button type="button" class="btn btn-primary" onclick="stopWebcam()">stopWebcam()</button>
+                  <button type="button" class="btn btn-primary" onclick="captureWebcam()">captureWebcam()</button>
+                  <button type="button" class="btn btn-primary" onclick="captureDiffWebcam()">captureDiffWebcam()</button>
+                  <button type="button" class="btn btn-primary" onclick="stopCaptureDiffWebcam()">stopCaptureDiffWebcam()</button>
+                  
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   </body>
 </html>
