@@ -9,7 +9,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    kiosk: true,          // 키오스크 모드 활성화
+    // kiosk: true,          // 키오스크 모드 활성화
     frame: true,         // 상단 메뉴 바 제거
     // fullscreen: true,     // 전체 화면
     webPreferences: {
@@ -69,7 +69,21 @@ ipcMain.on('quit', (event) => {
   app.quit();  // 앱 종료
 });
 ipcMain.on('toggle-fullscreen', () => {
+  console.log('xxx')
   if (mainWindow) {
     mainWindow.setFullScreen(!mainWindow.isFullScreen());
+  }
+});
+
+ipcMain.on('index_html', () => {
+  if (mainWindow) {
+    mainWindow.loadFile('index.html');
+  }
+});
+
+ipcMain.on('network-video_html', () => {
+  console.log('xxx')
+  if (mainWindow) {
+    mainWindow.loadFile('network-video.html');
   }
 });
