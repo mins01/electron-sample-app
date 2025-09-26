@@ -63,15 +63,15 @@
         const diffshot = document.querySelector('#diffshot');
         const video = document.querySelector('#webcam');
         const currentCanvas = document.createElement('canvas');
-        currentCanvas.width = video.videoWidth;
-        currentCanvas.height = video.videoHeight;
+        currentCanvas.width = video.videoWidth??video.width;
+        currentCanvas.height = video.videoHeight??video.height;
         const ctx = currentCanvas.getContext('2d');
         ctx.drawImage(video, 0, 0, currentCanvas.width, currentCanvas.height);
 
 
         const diffCanvas = document.querySelector('#diffCanvas');
-        diffCanvas.width = video.videoWidth;
-        diffCanvas.height = video.videoHeight;
+        diffCanvas.width = video.videoWidth??video.width;
+        diffCanvas.height = video.videoHeight??video.height;
         {
           const ctx = diffCanvas.getContext('2d');
           ctx.drawImage(currentCanvas, 0, 0, currentCanvas.width, currentCanvas.height);
@@ -122,7 +122,7 @@
                     <div class="form-label">webcam</div>
                     <div>
                       <!-- <video id="webcam" src="http://192.168.20.42:4747/video" autoplay playsinline muted controls style="display: block; aspect-ratio: 16/9; width: 300px;"></video> -->
-                       <img id="webcam" width="640" height="480" src="http://192.168.20.134:34747/video?640x480" crossorigin="anonymous">
+                       <img id="webcam" width="640" height="480" src="http://192.168.20.42:4747/video?640x480" crossorigin="anonymous">
                     </div>
                   </div>
                   <div>
